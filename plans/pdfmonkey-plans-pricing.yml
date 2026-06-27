@@ -1,0 +1,174 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: PDFMonkey
+providerId: pdfmonkey
+created: '2026-06-25'
+modified: '2026-06-25'
+reconciled: true
+tags:
+- PDF
+- Document Generation
+- Templates
+- HTML to PDF
+- Documents
+- Plans
+description: >-
+  PDFMonkey uses tiered monthly subscriptions metered primarily by the number
+  of documents generated per month. A Free plan covers light usage; paid tiers
+  (Starter, Pro, Pro+, Premium) raise the monthly document allowance and unlock
+  additional features. A 30-day trial grants extra documents, and all paid plans
+  offer a 10% discount when billed annually. Overage is available via Boost Packs
+  (1,000 documents for EUR 5) or pay-as-you-go on higher tiers.
+notes: >-
+  Prices and document allowances are as published on the PDFMonkey pricing page
+  and are quoted in EUR; verify current tiers, feature gating, and overage terms
+  against the pricing page during reconciliation.
+sources:
+- https://www.pdfmonkey.io/pricing
+- https://docs.pdfmonkey.io
+plans:
+- id: pdfmonkey-free
+  name: Free
+  type: free
+  description: >-
+    A free starting tier for building simple templates and light usage.
+  entries:
+  - label: Documents
+    name: documents
+    type: usage
+    metric: documents
+    limit: 20
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: EUR 0
+    userMultiplied: false
+  elements:
+  - name: Documents API
+  - name: Templates API
+  - name: Webhooks
+- id: pdfmonkey-trial
+  name: 30-Day Trial
+  type: trial
+  description: >-
+    A 30-day trial with an expanded document allowance and no credit card
+    required.
+  entries:
+  - label: Trial Documents
+    name: trial_documents
+    type: usage
+    metric: documents
+    limit: 300
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: EUR 0
+    userMultiplied: false
+  elements:
+  - name: Documents API
+  - name: Templates API
+  - name: Webhooks
+- id: pdfmonkey-starter
+  name: Starter
+  type: paid
+  description: >-
+    Entry paid tier for freelancers and small projects.
+  entries:
+  - label: Documents
+    name: documents
+    type: usage
+    metric: documents
+    limit: 300
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: EUR 5 / month (EUR 4.50 billed annually)
+    userMultiplied: false
+  elements:
+  - name: Documents API
+  - name: Templates API
+  - name: Webhooks
+- id: pdfmonkey-pro
+  name: Pro
+  type: paid
+  description: >-
+    Most popular tier for growing startups.
+  entries:
+  - label: Documents
+    name: documents
+    type: usage
+    metric: documents
+    limit: 3000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: EUR 15 / month (EUR 13.50 billed annually)
+    userMultiplied: false
+  elements:
+  - name: Documents API
+  - name: Templates API
+  - name: Webhooks
+- id: pdfmonkey-pro-plus
+  name: Pro+
+  type: paid
+  description: >-
+    Scaling tier with enhanced features, including public share links.
+  entries:
+  - label: Documents
+    name: documents
+    type: usage
+    metric: documents
+    limit: 5000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: EUR 60 / month (EUR 54 billed annually)
+    userMultiplied: false
+  elements:
+  - name: Documents API
+  - name: Templates API
+  - name: Webhooks
+  - name: Public Share Links
+- id: pdfmonkey-premium
+  name: Premium
+  type: paid
+  description: >-
+    High-volume tier for large-scale document automation.
+  entries:
+  - label: Documents
+    name: documents
+    type: usage
+    metric: documents
+    limit: 60000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: EUR 300 / month (EUR 270 billed annually)
+    userMultiplied: false
+  elements:
+  - name: Documents API
+  - name: Templates API
+  - name: Webhooks
+  - name: Public Share Links
+- id: pdfmonkey-boost-pack
+  name: Boost Pack
+  type: usage
+  description: >-
+    Overage document packs purchasable on top of a subscription.
+  entries:
+  - label: Additional Documents
+    name: boost_documents
+    type: usage
+    metric: documents
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000
+    price: EUR 5 per 1,000 documents
+    userMultiplied: false
+  elements:
+  - name: Additional Document Allowance
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

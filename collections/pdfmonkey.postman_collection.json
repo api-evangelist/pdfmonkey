@@ -1,0 +1,255 @@
+{
+  "info": {
+    "name": "PDFMonkey API",
+    "description": "PDFMonkey generates PDF and image documents from HTML + Liquid templates and a JSON payload. REST API under https://api.pdfmonkey.io/api/v1 with Bearer auth.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.pdfmonkey.io/api/v1"
+    },
+    {
+      "key": "documentId",
+      "value": ""
+    },
+    {
+      "key": "templateId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Documents",
+      "description": "Create, retrieve, update, and delete generated documents.",
+      "item": [
+        {
+          "name": "Create a document",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/documents",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"document\": {\n    \"document_template_id\": \"<uuid>\",\n    \"status\": \"pending\",\n    \"payload\": {},\n    \"meta\": { \"_filename\": \"invoice.pdf\" }\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Create a new document from a template and payload. Set status to pending to queue generation."
+          }
+        },
+        {
+          "name": "Create a document synchronously",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/documents/sync",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "sync"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"document\": {\n    \"document_template_id\": \"<uuid>\",\n    \"payload\": {},\n    \"meta\": {}\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Create a document and block until generation completes."
+          }
+        },
+        {
+          "name": "Fetch a document",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "{{documentId}}"]
+            },
+            "description": "Retrieve a full document including payload and generation logs."
+          }
+        },
+        {
+          "name": "Update a document",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "{{documentId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"document\": {\n    \"status\": \"pending\",\n    \"payload\": {}\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Update a draft document's payload, metadata, or template, or trigger generation."
+          }
+        },
+        {
+          "name": "Delete a document",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", "{{documentId}}"]
+            },
+            "description": "Permanently delete a document."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Document Cards",
+      "description": "Lightweight document representations for status polling and listing.",
+      "item": [
+        {
+          "name": "List document cards",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/document_cards?page[number]=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["document_cards"],
+              "query": [
+                { "key": "page[number]", "value": "1" },
+                { "key": "q[status]", "value": "success", "disabled": true },
+                { "key": "q[document_template_id]", "value": "", "disabled": true },
+                { "key": "q[workspace_id]", "value": "", "disabled": true },
+                { "key": "q[updated_since]", "value": "", "disabled": true }
+              ]
+            },
+            "description": "List documents as lightweight cards with pagination and filtering."
+          }
+        },
+        {
+          "name": "Fetch a document card",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/document_cards/{{documentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["document_cards", "{{documentId}}"]
+            },
+            "description": "Retrieve a lightweight document card to poll status and obtain the download URL."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Templates",
+      "description": "Manage document templates (HTML + Liquid, SCSS, settings).",
+      "item": [
+        {
+          "name": "Create a template",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/document_templates",
+              "host": ["{{baseUrl}}"],
+              "path": ["document_templates"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"document_template\": {\n    \"identifier\": \"Invoice\",\n    \"body\": \"<html>...</html>\",\n    \"scss_style\": \"\",\n    \"sample_data\": \"{}\"\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Create a new document template."
+          }
+        },
+        {
+          "name": "Fetch a template",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/document_templates/{{templateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["document_templates", "{{templateId}}"]
+            },
+            "description": "Retrieve full template details including body, styles, and sample data."
+          }
+        },
+        {
+          "name": "Update a template",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/document_templates/{{templateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["document_templates", "{{templateId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"document_template\": {\n    \"body\": \"<html>...</html>\"\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Update an existing document template."
+          }
+        },
+        {
+          "name": "Delete a template",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/document_templates/{{templateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["document_templates", "{{templateId}}"]
+            },
+            "description": "Permanently delete a document template."
+          }
+        },
+        {
+          "name": "List template cards",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/document_template_cards?page[number]=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["document_template_cards"],
+              "query": [{ "key": "page[number]", "value": "1" }]
+            },
+            "description": "List templates as lightweight cards with pagination."
+          }
+        }
+      ]
+    }
+  ]
+}

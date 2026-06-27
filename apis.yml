@@ -1,0 +1,120 @@
+aid: pdfmonkey
+url: https://raw.githubusercontent.com/api-evangelist/pdfmonkey/refs/heads/main/apis.yml
+name: PDFMonkey
+kind: company
+description: PDFMonkey is a document generation service that turns HTML + Liquid templates
+  and a JSON data payload into PDF (or image) documents via a REST API. Templates
+  are designed in a dashboard editor and generated on demand, asynchronously or synchronously,
+  with webhooks and signed download URLs for delivery.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- PDF
+- Document Generation
+- Templates
+- HTML to PDF
+- Documents
+created: '2026-06-25'
+modified: '2026-06-25'
+specificationVersion: '0.19'
+apis:
+- aid: pdfmonkey:documents
+  name: PDFMonkey Documents API
+  tags:
+  - Documents
+  - PDF
+  - Generation
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.pdfmonkey.io/references/api/documents
+  baseURL: https://api.pdfmonkey.io/api/v1
+  properties:
+  - url: https://docs.pdfmonkey.io/references/api/documents
+    type: Documentation
+  - url: https://docs.pdfmonkey.io/references/api
+    type: APIReference
+  - url: openapi/pdfmonkey-openapi.yml
+    type: OpenAPI
+  - url: collections/pdfmonkey.postman_collection.json
+    type: PostmanCollection
+  - url: collections/pdfmonkey.opencollection.json
+    type: OpenCollection
+  description: Create, retrieve, update, and delete documents. A document is generated
+    from a template plus a JSON payload, asynchronously by setting status to pending,
+    or synchronously via the documents/sync endpoint, returning signed download URLs.
+- aid: pdfmonkey:document-cards
+  name: PDFMonkey Document Cards API
+  tags:
+  - Document Cards
+  - Status
+  - Listing
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.pdfmonkey.io/references/api/documents
+  baseURL: https://api.pdfmonkey.io/api/v1
+  properties:
+  - url: https://docs.pdfmonkey.io/references/api/documents
+    type: Documentation
+  - url: openapi/pdfmonkey-openapi.yml
+    type: OpenAPI
+  - url: collections/pdfmonkey.postman_collection.json
+    type: PostmanCollection
+  - url: collections/pdfmonkey.opencollection.json
+    type: OpenCollection
+  description: Lightweight, paginated document representations that omit the heavy
+    payload attribute. Used to poll generation status and retrieve download URLs efficiently,
+    and to list documents with filtering by template, status, workspace, and update
+    time.
+- aid: pdfmonkey:templates
+  name: PDFMonkey Templates API
+  tags:
+  - Templates
+  - HTML
+  - Liquid
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.pdfmonkey.io/references/api/templates
+  baseURL: https://api.pdfmonkey.io/api/v1
+  properties:
+  - url: https://docs.pdfmonkey.io/references/api/templates
+    type: Documentation
+  - url: openapi/pdfmonkey-openapi.yml
+    type: OpenAPI
+  - url: collections/pdfmonkey.postman_collection.json
+    type: PostmanCollection
+  - url: collections/pdfmonkey.opencollection.json
+    type: OpenCollection
+  description: List, retrieve, create, update, and delete document templates. Templates
+    hold published and draft HTML + Liquid bodies, SCSS styles, sample data, and printing
+    settings. Lightweight document template cards support paginated listing.
+- aid: pdfmonkey:webhooks
+  name: PDFMonkey Webhooks
+  tags:
+  - Webhooks
+  - Events
+  - Notifications
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.pdfmonkey.io/pdfmonkey-features/webhooks
+  baseURL: https://api.pdfmonkey.io/api/v1
+  properties:
+  - url: https://docs.pdfmonkey.io/pdfmonkey-features/webhooks
+    type: Documentation
+  - url: openapi/pdfmonkey-openapi.yml
+    type: OpenAPI
+  description: Real-time notifications fired on documents.generation.success and documents.generation.failure.
+    The webhook delivers a DocumentCard payload (no dynamic payload, logs, or checksum);
+    use the meta field on creation to pass data through to handlers.
+common:
+- type: GitHubOrganization
+  url: https://github.com/pdfmonkey
+- type: LinkedIn
+  url: https://www.linkedin.com/company/pdfmonkey
+- type: Website
+  url: https://www.pdfmonkey.io
+- type: Documentation
+  url: https://docs.pdfmonkey.io
+- type: Plans
+  url: plans/pdfmonkey-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/pdfmonkey-rate-limits.yml
+- type: FinOps
+  url: finops/pdfmonkey-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

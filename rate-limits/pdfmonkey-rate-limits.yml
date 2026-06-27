@@ -1,0 +1,61 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: PDFMonkey
+providerId: pdfmonkey
+created: '2026-06-25'
+modified: '2026-06-25'
+reconciled: false
+tags:
+- PDF
+- Document Generation
+- Templates
+- HTML to PDF
+- Documents
+- Rate Limiting
+- Quotas
+- Throttling
+description: >-
+  PDFMonkey's primary usage constraint is the monthly document allowance tied to
+  the account's subscription plan, rather than per-second request throttling.
+  Once the monthly document quota is exhausted, further generation is blocked
+  until the allowance resets, additional Boost Pack documents are purchased, or
+  the plan is upgraded. Specific per-second or per-minute HTTP request rate
+  limits are not published and are not reconciled in this artifact.
+notes: >-
+  Verify whether PDFMonkey enforces any per-second / per-minute HTTP request
+  limits and the exact throttling response code during reconciliation; the
+  documented constraint is the monthly document quota per plan.
+sources:
+- https://www.pdfmonkey.io/pricing
+- https://docs.pdfmonkey.io
+responseCodes:
+  throttled: 429
+limits:
+- name: Monthly Documents
+  scope: account
+  metric: documents
+  limit: see plan allowance
+  notes: >-
+    Number of documents that can be generated per month, set by the
+    subscription plan (Free 20, Starter/Trial 300, Pro 3,000, Pro+ 5,000,
+    Premium 60,000). Overage available via Boost Packs.
+- name: HTTP Request Rate
+  scope: account
+  metric: requests
+  limit: see provider documentation
+  notes: >-
+    Per-second / per-minute HTTP request limits are not publicly documented;
+    not reconciled in this artifact.
+policies:
+- name: Quota-Based Limiting
+  description: >-
+    Usage is gated by the monthly document allowance of the active plan; exhausting
+    it blocks generation until reset, upgrade, or Boost Pack purchase.
+- name: Backoff Strategy
+  description: >-
+    Clients should implement exponential backoff with jitter and honor any
+    Retry-After header on throttled responses.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

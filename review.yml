@@ -1,0 +1,79 @@
+aid: pdfmonkey
+name: PDFMonkey
+review:
+  question: Does PDFMonkey expose a documented public WebSocket API?
+  answer: false
+  date: '2026-06-25'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was created. PDFMonkey exposes only synchronous and
+    asynchronous REST endpoints over HTTPS. Asynchronous generation results are
+    delivered via HTTP webhooks (server-to-server callbacks), not via a
+    WebSocket or Server-Sent Events stream, so there is no event-streaming
+    surface to model in AsyncAPI at this time.
+findings:
+  summary: |
+    PDFMonkey does not publish a documented public WebSocket API. The platform
+    exposes a REST (HTTPS) API under https://api.pdfmonkey.io/api/v1 for
+    documents, document cards, and document templates. Generation can be
+    asynchronous (create a document with status "pending", then poll a
+    document card or receive a webhook) or synchronous (POST /documents/sync,
+    which blocks until the document is ready). Completion notifications are
+    delivered as outbound HTTP webhooks (documents.generation.success /
+    documents.generation.failure). No realtime, bidirectional, or streaming
+    WebSocket (ws:// or wss://) endpoint is documented.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.pdfmonkey.io/api/v1
+      documented: true
+    - protocol: Webhook
+      scheme: https
+      note: >-
+        Outbound HTTP callbacks fired on documents.generation.success and
+        documents.generation.failure, delivering a DocumentCard payload. This
+        is a server-to-server HTTP POST, not a client-held streaming connection.
+      documented: true
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: >-
+        No WebSocket endpoint is documented in PDFMonkey's API reference or
+        feature pages as of the review date.
+  endpointsConfirmedRest:
+    - POST   https://api.pdfmonkey.io/api/v1/documents
+    - POST   https://api.pdfmonkey.io/api/v1/documents/sync
+    - GET    https://api.pdfmonkey.io/api/v1/documents/{id}
+    - PUT    https://api.pdfmonkey.io/api/v1/documents/{id}
+    - DELETE https://api.pdfmonkey.io/api/v1/documents/{id}
+    - GET    https://api.pdfmonkey.io/api/v1/document_cards
+    - GET    https://api.pdfmonkey.io/api/v1/document_cards/{id}
+    - POST   https://api.pdfmonkey.io/api/v1/document_templates
+    - GET    https://api.pdfmonkey.io/api/v1/document_templates/{id}
+    - PUT    https://api.pdfmonkey.io/api/v1/document_templates/{id}
+    - DELETE https://api.pdfmonkey.io/api/v1/document_templates/{id}
+    - GET    https://api.pdfmonkey.io/api/v1/document_template_cards
+sources:
+  - url: https://docs.pdfmonkey.io/references/api
+    type: APIReference
+    note: Lists REST base URL https://api.pdfmonkey.io/api/v1 with Bearer auth; no WebSocket mentioned.
+  - url: https://docs.pdfmonkey.io/references/api/documents
+    type: Documentation
+    note: Documents and document_cards endpoints; all HTTPS REST.
+  - url: https://docs.pdfmonkey.io/references/api/templates
+    type: Documentation
+    note: Document template and document_template_card endpoints; all HTTPS REST.
+  - url: https://docs.pdfmonkey.io/pdfmonkey-features/webhooks
+    type: Documentation
+    note: >-
+      Generation results delivered via outbound HTTP webhooks with a
+      DocumentCard payload; not a WebSocket stream.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists, and asynchronous results are delivered
+    via outbound HTTP webhooks rather than a client-held event stream, so no
+    AsyncAPI document was authored. The apis.yml models the REST documents,
+    document cards, and templates APIs plus the webhook surface.

@@ -1,0 +1,191 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PDFMonkey API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Documents",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a document",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.pdfmonkey.io/api/v1/documents",
+            "body": {
+              "type": "json",
+              "data": "{\n  \"document\": {\n    \"document_template_id\": \"<uuid>\",\n    \"status\": \"pending\",\n    \"payload\": {},\n    \"meta\": { \"_filename\": \"invoice.pdf\" }\n  }\n}"
+            }
+          },
+          "docs": "Create a new document from a template and payload. Set status to pending to queue generation."
+        },
+        {
+          "info": {
+            "name": "Create a document synchronously",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.pdfmonkey.io/api/v1/documents/sync",
+            "body": {
+              "type": "json",
+              "data": "{\n  \"document\": {\n    \"document_template_id\": \"<uuid>\",\n    \"payload\": {},\n    \"meta\": {}\n  }\n}"
+            }
+          },
+          "docs": "Create a document and block until generation completes."
+        },
+        {
+          "info": {
+            "name": "Fetch a document",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.pdfmonkey.io/api/v1/documents/{{documentId}}"
+          },
+          "docs": "Retrieve a full document including payload and generation logs."
+        },
+        {
+          "info": {
+            "name": "Update a document",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.pdfmonkey.io/api/v1/documents/{{documentId}}",
+            "body": {
+              "type": "json",
+              "data": "{\n  \"document\": {\n    \"status\": \"pending\",\n    \"payload\": {}\n  }\n}"
+            }
+          },
+          "docs": "Update a draft document's payload, metadata, or template, or trigger generation."
+        },
+        {
+          "info": {
+            "name": "Delete a document",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.pdfmonkey.io/api/v1/documents/{{documentId}}"
+          },
+          "docs": "Permanently delete a document."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Document Cards",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List document cards",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.pdfmonkey.io/api/v1/document_cards"
+          },
+          "docs": "List documents as lightweight cards with pagination and filtering (status, template, workspace, updated_since)."
+        },
+        {
+          "info": {
+            "name": "Fetch a document card",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.pdfmonkey.io/api/v1/document_cards/{{documentId}}"
+          },
+          "docs": "Retrieve a lightweight document card to poll status and obtain the download URL."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Templates",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a template",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.pdfmonkey.io/api/v1/document_templates",
+            "body": {
+              "type": "json",
+              "data": "{\n  \"document_template\": {\n    \"identifier\": \"Invoice\",\n    \"body\": \"<html>...</html>\",\n    \"scss_style\": \"\",\n    \"sample_data\": \"{}\"\n  }\n}"
+            }
+          },
+          "docs": "Create a new document template."
+        },
+        {
+          "info": {
+            "name": "Fetch a template",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.pdfmonkey.io/api/v1/document_templates/{{templateId}}"
+          },
+          "docs": "Retrieve full template details including body, styles, and sample data."
+        },
+        {
+          "info": {
+            "name": "Update a template",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.pdfmonkey.io/api/v1/document_templates/{{templateId}}",
+            "body": {
+              "type": "json",
+              "data": "{\n  \"document_template\": {\n    \"body\": \"<html>...</html>\"\n  }\n}"
+            }
+          },
+          "docs": "Update an existing document template."
+        },
+        {
+          "info": {
+            "name": "Delete a template",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.pdfmonkey.io/api/v1/document_templates/{{templateId}}"
+          },
+          "docs": "Permanently delete a document template."
+        },
+        {
+          "info": {
+            "name": "List template cards",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.pdfmonkey.io/api/v1/document_template_cards"
+          },
+          "docs": "List templates as lightweight cards with pagination."
+        }
+      ]
+    }
+  ]
+}
