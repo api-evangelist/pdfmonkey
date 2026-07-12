@@ -101,6 +101,10 @@ apis:
     The webhook delivers a DocumentCard payload (no dynamic payload, logs, or checksum);
     use the meta field on creation to pass data through to handlers.
 common:
+- type: DomainSecurity
+  url: security/pdfmonkey-domain-security.yml
+- type: Authentication
+  url: authentication/pdfmonkey-authentication.yml
 - type: GitHubOrganization
   url: https://github.com/pdfmonkey
 - type: LinkedIn
@@ -115,6 +119,8 @@ common:
   url: rate-limits/pdfmonkey-rate-limits.yml
 - type: FinOps
   url: finops/pdfmonkey-finops.yml
+- url: https://www.pdfmonkey.io/blog
+  type: Blog
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
