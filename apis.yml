@@ -101,6 +101,8 @@ apis:
     The webhook delivers a DocumentCard payload (no dynamic payload, logs, or checksum);
     use the meta field on creation to pass data through to handlers.
 common:
+- type: AgenticAccess
+  url: agentic-access/pdfmonkey-agentic-access.yml
 - type: DomainSecurity
   url: security/pdfmonkey-domain-security.yml
 - type: Authentication
