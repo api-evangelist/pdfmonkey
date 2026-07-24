@@ -1,0 +1,185 @@
+openapi: 3.0.1
+info:
+  title: PDFMonkey Document Cards API
+  description: PDFMonkey generates PDF (and image) documents from HTML + Liquid templates and a JSON data payload. The REST API lets you create, retrieve, update, and delete documents (asynchronously or synchronously), poll lightweight document cards for status and download URLs, and manage document templates.
+  termsOfService: https://www.pdfmonkey.io/terms
+  contact:
+    name: PDFMonkey Support
+    url: https://www.pdfmonkey.io
+  version: '1.0'
+servers:
+- url: https://api.pdfmonkey.io/api/v1
+  description: PDFMonkey API v1
+security:
+- bearerAuth: []
+tags:
+- name: Document Cards
+  description: Lightweight document representations for status polling and listing.
+paths:
+  /document_cards:
+    get:
+      operationId: listDocumentCards
+      tags:
+      - Document Cards
+      summary: List document cards
+      description: List documents as lightweight document cards (no payload), with pagination and filtering. The endpoint returns up to 24 items per page.
+      parameters:
+      - name: page[number]
+        in: query
+        description: Number of the page to show (default 1).
+        schema:
+          type: integer
+          default: 1
+      - name: q[document_template_id]
+        in: query
+        description: Filter on one or more template IDs.
+        schema:
+          type: string
+      - name: q[status]
+        in: query
+        description: Filter on document status.
+        schema:
+          type: string
+          enum:
+          - draft
+          - pending
+          - generating
+          - success
+          - failure
+      - name: q[workspace_id]
+        in: query
+        description: ID of a workspace to filter on.
+        schema:
+          type: string
+      - name: q[updated_since]
+        in: query
+        description: Filter documents updated after a given point in time.
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentCardListResponse'
+        '401':
+          description: Unauthorized
+  /document_cards/{id}:
+    get:
+      operationId: getDocumentCard
+      tags:
+      - Document Cards
+      summary: Fetch a document card
+      description: Retrieve a lightweight document card for a document. This is the recommended way to poll generation status and obtain the download URL, since it omits the heavy payload attribute.
+      parameters:
+      - $ref: '#/components/parameters/DocumentId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentCardResponse'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+components:
+  schemas:
+    DocumentCard:
+      type: object
+      description: Lightweight document representation. Same as a Document but without the payload attribute.
+      properties:
+        id:
+          type: string
+          format: uuid
+        app_id:
+          type: string
+          format: uuid
+        document_template_id:
+          type: string
+          format: uuid
+        document_template_identifier:
+          type: string
+        status:
+          type: string
+          enum:
+          - draft
+          - pending
+          - generating
+          - success
+          - failure
+        meta:
+          type: object
+          nullable: true
+          additionalProperties: true
+        filename:
+          type: string
+          nullable: true
+        download_url:
+          type: string
+          format: uri
+          nullable: true
+        preview_url:
+          type: string
+          format: uri
+        public_share_link:
+          type: string
+          format: uri
+          nullable: true
+        output_type:
+          type: string
+        failure_cause:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    PaginationMeta:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        next_page:
+          type: integer
+          nullable: true
+        prev_page:
+          type: integer
+          nullable: true
+        total_pages:
+          type: integer
+        total_count:
+          type: integer
+    DocumentCardListResponse:
+      type: object
+      properties:
+        document_cards:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentCard'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+    DocumentCardResponse:
+      type: object
+      properties:
+        document_card:
+          $ref: '#/components/schemas/DocumentCard'
+  parameters:
+    DocumentId:
+      name: id
+      in: path
+      required: true
+      description: The UUID of the document.
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Pass your secret API key from the dashboard as a Bearer token in the Authorization header.

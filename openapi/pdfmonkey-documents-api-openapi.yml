@@ -1,0 +1,261 @@
+openapi: 3.0.1
+info:
+  title: PDFMonkey Document Cards Documents API
+  description: PDFMonkey generates PDF (and image) documents from HTML + Liquid templates and a JSON data payload. The REST API lets you create, retrieve, update, and delete documents (asynchronously or synchronously), poll lightweight document cards for status and download URLs, and manage document templates.
+  termsOfService: https://www.pdfmonkey.io/terms
+  contact:
+    name: PDFMonkey Support
+    url: https://www.pdfmonkey.io
+  version: '1.0'
+servers:
+- url: https://api.pdfmonkey.io/api/v1
+  description: PDFMonkey API v1
+security:
+- bearerAuth: []
+tags:
+- name: Documents
+  description: Create, retrieve, update, and delete generated documents.
+paths:
+  /documents:
+    post:
+      operationId: createDocument
+      tags:
+      - Documents
+      summary: Create a document
+      description: Create a new document from a template and payload. Set status to "pending" to queue generation immediately, or leave as a draft.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentCreateRequest'
+      responses:
+        '201':
+          description: Document created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+        '401':
+          description: Unauthorized
+        '422':
+          description: Unprocessable entity
+  /documents/sync:
+    post:
+      operationId: createDocumentSync
+      tags:
+      - Documents
+      summary: Create a document synchronously
+      description: Create a document and block until generation completes, returning the finished document. Suited to prototyping and low-volume interactive use; webhooks are recommended for production.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentCreateRequest'
+      responses:
+        '201':
+          description: Document generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+        '401':
+          description: Unauthorized
+        '422':
+          description: Unprocessable entity
+  /documents/{id}:
+    get:
+      operationId: getDocument
+      tags:
+      - Documents
+      summary: Fetch a document
+      description: Retrieve a full document, including its payload and generation logs.
+      parameters:
+      - $ref: '#/components/parameters/DocumentId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+    put:
+      operationId: updateDocument
+      tags:
+      - Documents
+      summary: Update a document
+      description: Update a draft document's payload, metadata, or template, or set its status to "pending" to trigger generation.
+      parameters:
+      - $ref: '#/components/parameters/DocumentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentUpdateRequest'
+      responses:
+        '200':
+          description: Document updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentResponse'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '422':
+          description: Unprocessable entity
+    delete:
+      operationId: deleteDocument
+      tags:
+      - Documents
+      summary: Delete a document
+      description: Permanently delete a document.
+      parameters:
+      - $ref: '#/components/parameters/DocumentId'
+      responses:
+        '204':
+          description: Document deleted
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+components:
+  schemas:
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        app_id:
+          type: string
+          format: uuid
+          description: Workspace identifier.
+        document_template_id:
+          type: string
+          format: uuid
+        document_template_identifier:
+          type: string
+        status:
+          type: string
+          enum:
+          - draft
+          - pending
+          - generating
+          - success
+          - failure
+        payload:
+          type: object
+          nullable: true
+          additionalProperties: true
+        meta:
+          type: object
+          nullable: true
+          additionalProperties: true
+        filename:
+          type: string
+          nullable: true
+        download_url:
+          type: string
+          format: uri
+          nullable: true
+          description: Temporary signed link, valid for about one hour.
+        preview_url:
+          type: string
+          format: uri
+        public_share_link:
+          type: string
+          format: uri
+          nullable: true
+        checksum:
+          type: string
+        generation_logs:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        failure_cause:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    DocumentUpdateRequest:
+      type: object
+      required:
+      - document
+      properties:
+        document:
+          type: object
+          properties:
+            document_template_id:
+              type: string
+              format: uuid
+            status:
+              type: string
+              enum:
+              - draft
+              - pending
+            payload:
+              type: object
+              additionalProperties: true
+            meta:
+              type: object
+              additionalProperties: true
+    DocumentResponse:
+      type: object
+      properties:
+        document:
+          $ref: '#/components/schemas/Document'
+    DocumentCreateRequest:
+      type: object
+      required:
+      - document
+      properties:
+        document:
+          type: object
+          required:
+          - document_template_id
+          properties:
+            document_template_id:
+              type: string
+              format: uuid
+              description: The template to generate from.
+            status:
+              type: string
+              description: Set to "pending" to queue generation upon creation.
+              enum:
+              - draft
+              - pending
+            payload:
+              type: object
+              additionalProperties: true
+              description: Dynamic JSON data made available to the template.
+            meta:
+              type: object
+              additionalProperties: true
+              description: Custom metadata passed through to webhooks. Supports the _filename key to set the output file name.
+  parameters:
+    DocumentId:
+      name: id
+      in: path
+      required: true
+      description: The UUID of the document.
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Pass your secret API key from the dashboard as a Bearer token in the Authorization header.
