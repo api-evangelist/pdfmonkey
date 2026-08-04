@@ -1,0 +1,18 @@
+{
+  "provider": "pdfmonkey",
+  "sources": [
+    "pdfmonkey-document-cards-api-openapi.yml",
+    "pdfmonkey-documents-api-openapi.yml",
+    "pdfmonkey-templates-api-openapi.yml"
+  ],
+  "outputs": [
+    "pdfmonkey-document-cards-api-openapi.yml",
+    "pdfmonkey-documents-api-openapi.yml",
+    "pdfmonkey-templates-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
